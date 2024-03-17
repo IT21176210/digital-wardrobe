@@ -1,0 +1,11 @@
+{
+  "name": "digital-wardrobe",
+  "version": "1.0.0",
+  "description": "organizing and maintaining a digital wardrobe - IT21187582 Shanoojan.K",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "IT21187582",
+  "license": "ISC"
+}
