@@ -15,6 +15,10 @@ var ClothSchema = new Schema(
       type: String,
       required: true,
     },
+    stock: {
+        type: String,
+        required: true
+    },
     description: {
       type: String,
       required: true,
