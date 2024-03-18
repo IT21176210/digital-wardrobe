@@ -2,19 +2,19 @@ var express = require('express');
 
 const router = express.Router();
 
-// Table route
+// Cloth route
 
-// var tableController = require('../src/table/tableController');
+var clothController = require('../src/cloth/clothController');
 
-// router.route('/table/getAll').get(tableController.getDataControllerfn);
+router.route('/cloth/getAll').get(clothController.getDataControllerfn);
 
-// router.route('/table/create').post(tableController.createTableControllerFn);
+router.route('/cloth/create').post(clothController.createClothControllerFn);
 
-// router.route('/table/update/:id').patch(tableController.updateTableController);
+router.route('/cloth/update/:id').patch(clothController.updateClothController);
 
-// router.route('/table/delete/:id').delete(tableController.deleteTableController);
+router.route('/cloth/delete/:id').delete(clothController.deleteClothController);
 
-// router.route('/table/get/:id').get(tableController.findTableController);
+router.route('/cloth/get/:id').get(clothController.findClothController);
 
 
 
