@@ -27,6 +27,7 @@ module.exports.createClothDBService = (clothDetails) => {
     clothModelData.type = clothDetails.type;
     clothModelData.category = clothDetails.category;
     clothModelData.price = clothDetails.price;
+    clothModelData.stock = clothDetails.stock;
     clothModelData.description = clothDetails.description;
     clothModelData.rating = clothDetails.rating;
 
