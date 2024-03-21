@@ -1,30 +1,26 @@
-"use client";
-import { invalidData } from "@hookform/resolvers/ajv/src/__tests__/__fixtures__/data.js";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ButtonIcon,
   DropdownMenuIcon,
   InfoCircledIcon,
   PlusIcon,
 } from "@radix-ui/react-icons";
 import {
-  Dialog,
-  Flex,
-  TextField,
-  Text,
-  DropdownMenu,
-  Grid,
   Box,
   Button,
-  IconButton,
   Callout,
+  Dialog,
+  DropdownMenu,
+  Flex,
+  Grid,
+  Text,
+  TextField,
 } from "@radix-ui/themes";
+import axios from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { TfiClose } from "react-icons/tfi";
 import { z } from "zod";
 import { ErrorsC } from ".";
-import { useState } from "react";
-import axios from "axios";
 
 const FormValidationSchema = z.object({
   NewProductName: z.string().min(1, "Product Name is required"),

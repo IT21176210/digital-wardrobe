@@ -14,6 +14,7 @@ import {
 import axios from "axios";
 import { GiPoloShirt } from "react-icons/gi";
 import { TbCashBanknote } from "react-icons/tb";
+import { UpdateDialog } from ".";
 
 const ProductCard = ({
   Name,
@@ -53,9 +54,14 @@ const ProductCard = ({
                 <Link className=" text-black">{Name}</Link>
               </Text>
               <Flex align={"center"} gap={"2"}>
-                <IconButton>
-                  <Pencil2Icon />
-                </IconButton>
+                <UpdateDialog
+                  name={Name.toString()}
+                  price={Price.toString()}
+                  imageurl={ImgUrl}
+                  cato={"Male"}
+                  desc={Discription.toString()}
+                  _id={_id.toString()}
+                />
                 <AlertDialog.Root>
                   <AlertDialog.Trigger>
                     <Box>
