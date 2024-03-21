@@ -1,5 +1,4 @@
-import { Container, Box, Text } from "@radix-ui/themes";
-import React from "react";
+import { Container, Text } from "@radix-ui/themes";
 
 const imageCard = ({
   Imgurl,

@@ -1,5 +1,4 @@
-import React from "react";
-import { Text, Flex } from "@radix-ui/themes";
+import { Flex, Text } from "@radix-ui/themes";
 import { NewArrivalCards } from "../component";
 
 const NewCollections = () => {

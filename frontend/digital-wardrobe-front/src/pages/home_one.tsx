@@ -1,5 +1,4 @@
-import { Grid, Box, Button, Container, Text } from "@radix-ui/themes";
-import React from "react";
+import { Box, Button, Container, Grid, Text } from "@radix-ui/themes";
 import { useNavigate } from "react-router-dom";
 
 const home_one = () => {

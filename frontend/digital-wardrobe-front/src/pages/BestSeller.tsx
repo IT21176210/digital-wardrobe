@@ -1,4 +1,4 @@
-import { Box, Button, Container, Flex, Grid, Text } from "@radix-ui/themes";
+import { Button, Container, Flex, Grid, Text } from "@radix-ui/themes";
 import { CardCustom } from "../component";
 
 const BestSeller = () => {

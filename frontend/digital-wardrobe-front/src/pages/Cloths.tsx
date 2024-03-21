@@ -1,10 +1,10 @@
-import React from "react";
+import { NavBar } from "../component";
 
 const Cloths = () => {
   return (
-    <div>
-      <h1>Cloths</h1>
-    </div>
+    <>
+      <NavBar />
+    </>
   );
 };
 
