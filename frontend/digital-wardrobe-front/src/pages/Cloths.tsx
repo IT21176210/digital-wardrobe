@@ -12,6 +12,7 @@ interface Productx {
   price: String;
   ImageUrl: string;
   category: String;
+  _id: String;
 }
 
 const Cloths = () => {
@@ -26,6 +27,7 @@ const Cloths = () => {
       price: "",
       ImageUrl: "",
       category: "",
+      _id: "",
     },
   ]);
 
@@ -89,6 +91,7 @@ const Cloths = () => {
                 Catagory={product.category}
                 Name={product.name}
                 ImgUrl={product.ImageUrl}
+                _id={product._id}
               />
             ))}
         </Grid>

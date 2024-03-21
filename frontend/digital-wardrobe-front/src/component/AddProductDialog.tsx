@@ -1,7 +1,12 @@
 "use client";
 import { invalidData } from "@hookform/resolvers/ajv/src/__tests__/__fixtures__/data.js";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ButtonIcon, DropdownMenuIcon, PlusIcon } from "@radix-ui/react-icons";
+import {
+  ButtonIcon,
+  DropdownMenuIcon,
+  InfoCircledIcon,
+  PlusIcon,
+} from "@radix-ui/react-icons";
 import {
   Dialog,
   Flex,
@@ -12,24 +17,39 @@ import {
   Box,
   Button,
   IconButton,
+  Callout,
 } from "@radix-ui/themes";
 import { useForm } from "react-hook-form";
 import { TfiClose } from "react-icons/tfi";
 import { z } from "zod";
+import { ErrorsC } from ".";
+import { useState } from "react";
+import axios from "axios";
 
 const FormValidationSchema = z.object({
   NewProductName: z.string().min(1, "Product Name is required"),
   NewProductDescription: z.string(),
-  NewProductPrice: z.number().positive("Value must be greater than Zero"),
+  NewProductPrice: z.string().min(1, "Value must be greater than Zero"),
   NewProductUrl: z.string().min(1, "Needed image "),
 });
 
 type FormSchma = z.infer<typeof FormValidationSchema>;
 
+// interface FromValidation {
+//   NewProductName: String;
+//   NewProductDescription: String;
+//   NewProductPrice: String;
+//   NewProductUrl: String;
+// }
+
 const AddProductDialog = () => {
+  const [isSubmitting, setSubmit] = useState<boolean>(false);
+  const [Catog, setCatog] = useState<"Male" | "Female" | "Uni-SEX">("Male");
+  const [CausedError, SetCause] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormSchma>({
     resolver: zodResolver(FormValidationSchema),
@@ -56,26 +76,33 @@ const AddProductDialog = () => {
           enter the details of the product that you like to add
         </Dialog.Description>
         <br />
+        {CausedError && (
+          <Callout.Root>
+            <Callout.Icon>
+              <InfoCircledIcon />
+            </Callout.Icon>
+            <Callout.Text>UnExpected Error Occured</Callout.Text>
+          </Callout.Root>
+        )}
         <form
-          onSubmit={handleSubmit(
-            (d) => {
-              console.log("valid");
-            },
-            (errors) => {
-              console.log(
-                "invalid" +
-                  "desc" +
-                  errors.NewProductDescription +
-                  "name" +
-                  errors.NewProductName +
-                  "price" +
-                  errors.NewProductPrice +
-                  errors.root +
-                  "url" +
-                  errors.NewProductUrl
-              );
-            }
-          )}
+          onSubmit={handleSubmit((e) => {
+            setSubmit(true);
+            axios
+              .post("http://localhost:8000/cloth/create", {
+                name: e.NewProductName,
+                category: Catog,
+                price: e.NewProductPrice,
+                ImageUrl: e.NewProductUrl,
+                description: e.NewProductDescription,
+              })
+              .then(() => {
+                setSubmit(false);
+                reset();
+              })
+              .catch((e) => {
+                SetCause(false);
+              });
+          })}
         >
           <Flex direction={"column"} gap={"1"}>
             <Text>1. Name of the Product</Text>
@@ -86,6 +113,9 @@ const AddProductDialog = () => {
                 {...register("NewProductName")}
               />
             </TextField.Root>
+            {errors.NewProductName && (
+              <ErrorsC Msg={errors.NewProductName.message!} />
+            )}
             <br />
             <Text>2. Description about Product</Text>
             <TextField.Root>
@@ -95,6 +125,9 @@ const AddProductDialog = () => {
                 {...register("NewProductDescription")}
               />
             </TextField.Root>
+            {errors.NewProductDescription && (
+              <ErrorsC Msg={errors.NewProductDescription.message!} />
+            )}
             <br />
             <Text>2. Price Product</Text>
             <TextField.Root>
@@ -104,6 +137,9 @@ const AddProductDialog = () => {
                 {...register("NewProductPrice")}
               />
             </TextField.Root>
+            {errors.NewProductPrice && (
+              <ErrorsC Msg={errors.NewProductPrice.message!} />
+            )}
             <br />
             <Text>3. Price Catogory</Text>
             <DropdownMenu.Root>
@@ -116,11 +152,26 @@ const AddProductDialog = () => {
                 </TextField.Root>
               </DropdownMenu.Trigger>
               <DropdownMenu.Content>
-                <DropdownMenu.Item>
+                <DropdownMenu.Item
+                  onClick={() => {
+                    setCatog("Male");
+                  }}
+                >
                   <Text>Male</Text>
                 </DropdownMenu.Item>
-                <DropdownMenu.Item>
-                  <Text>Fe-Male</Text>
+                <DropdownMenu.Item
+                  onClick={() => {
+                    setCatog("Female");
+                  }}
+                >
+                  <Text>Female</Text>
+                </DropdownMenu.Item>
+                <DropdownMenu.Item
+                  onClick={() => {
+                    setCatog("Uni-SEX");
+                  }}
+                >
+                  <Text>Uni-Sex</Text>
                 </DropdownMenu.Item>
               </DropdownMenu.Content>
             </DropdownMenu.Root>
@@ -154,6 +205,7 @@ const AddProductDialog = () => {
           <Flex justify={"end"}>
             <button
               type="submit"
+              disabled={isSubmitting}
               className=" bg-red-400 pt-1 bt-b-1 pl-2 pr-2 rounded-md font-medium text-lg"
             >
               Save
