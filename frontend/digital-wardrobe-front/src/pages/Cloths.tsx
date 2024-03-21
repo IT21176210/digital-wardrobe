@@ -3,9 +3,44 @@ import { Flex, Grid, TextField } from "@radix-ui/themes";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { NavBar, NewProductCard, ProductCard } from "../component";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+interface Productx {
+  name: String;
+  description: String;
+  price: String;
+  ImageUrl: string;
+  category: String;
+}
 
 const Cloths = () => {
   const to = useNavigate();
+
+  const [_Loading, _setLoading] = useState(false);
+  const [_SearchQuote, _setSearchQuote] = useState("");
+  const [_ProductList, _setProductList] = useState<[Productx]>([
+    {
+      name: "",
+      description: "",
+      price: "",
+      ImageUrl: "",
+      category: "",
+    },
+  ]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/cloth/getAll")
+      .then((data) => {
+        const productlist = data.data.data;
+        _setProductList(productlist);
+      })
+      .catch((error) => {
+        console.log("Error" + error);
+      });
+  }, [_ProductList]);
+
   return (
     <>
       <NavBar />
@@ -16,7 +51,12 @@ const Cloths = () => {
             <TextField.Slot>
               <FaMagnifyingGlass />
             </TextField.Slot>
-            <TextField.Input placeholder=" Name of the Product..." />
+            <TextField.Input
+              placeholder=" Name of the Product..."
+              onChange={(d) => {
+                _setSearchQuote(d.currentTarget.value);
+              }}
+            />
           </TextField.Root>
         </div>
       </center>
@@ -33,13 +73,24 @@ const Cloths = () => {
           gapY={"3"}
           gapX={"8"}
         >
-          <ProductCard
-            Price={"12 000"}
-            Discription={"A Set of Hangers are controlable"}
-            Catagory={"Male"}
-            Name="Product Name"
-            ImgUrl="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHCBIRERISEhIZEhISEhoYGBIYGBgYEhgSGBgZGRgYGRgcIS4lHB4tIRgZJjsmLS8xNTU1HCQ7QDszPy40NTEBDAwMEA8QHhISGjQrJCs2NDE0NDQ0NDQ0NDE0MTQ0NDQ2NDQ0NDQ0MTQ0NDQ0NDQ0NDQxNDQ0NDE0NDQ0NDQ0NP/AABEIALcBEwMBIgACEQEDEQH/xAAbAAACAwEBAQAAAAAAAAAAAAAAAQIEBQMGB//EAEIQAAEDAgMFBQUECAcAAwEAAAEAAhEDIQQSMQUiQVFhEzJxgZEGcqGxwSMzUtEHFEJic7Lw8SRjgpKiwuE0Q7MV/8QAGAEBAQEBAQAAAAAAAAAAAAAAAAECAwT/xAAiEQEBAAIBBQACAwAAAAAAAAAAAQIRMQMSIUFxBCIyUYH/2gAMAwEAAhEDEQA/APoySaULDZpJohBApKRCIQIKNP8Aa94/ILooU/2veP0QNBQUFAiUkFJASkUFRKBylKRKUoGUilKCUAiUpRKCUpyoyiUDKYUSU2lBGr36fvH+Ry7qvV79P3z/ACPXdBJNRTCgaEwkgEIQqBCEKAQhCmldYThShKFpEYThShEIIEKMLoQlCCMKFMd73iuwC5UR3vfd80DIUSuhCgQggUoUyEoQQKiVMhRIQQSUoSIQIpFMpFBFNJCBymCopoGU2lRKbUEK/fpfxD/+dRWAq9Yb1L+If5HruEEgmFFSCCSEBCAQhCAQhCAQhCgtIUkAKhQiFJEIiBCUKRCIQRAXKgyA7q9x+KsQudIWPvO+aKRCiQupCiQiOJCCFMhIhBzIUSF0ISIRXKEiF0IUSEHMhIhdCFEhBzhOE4QAgUJwnCIQRITaEyENCDnW71P+J/0euwC51xen/EH8rl2AQIKQThMBAgmpQiEEUKUIhBFClCUIEhEIUF7KghdIRCo4EqFQFzSAcpPHiF2dTXJ9MhERa8gQ6/7wE+oU2uB0M+CrvfCj2gPj8UFsPbOXMM0TEiY5xyVTZWKFZr3tH2faOyunvjWQOAWdjsbTdiGYZ7e+0xUe3dznutaeoDt7mIXLZbH4Kqab2vNOu85HTmpsc0Wafwh3C2tuUB6IqJCbKjXaFBWhAhRhTKSCBCg4LqVEhZEIUSF0IUSEECFAhdiFAhBzhACnCAEEYRClCcIOZCGhTIQ0IrliR93/ABG/VdwFzxDbN99vzXaECATAThMBAoThSARCCMJQpwiEEIShdIShBCElOEIL6cJwmAtIiEnBThIhBXqMBVSpQ5LQcFWfPJZIxmbND8Y+pUYHOp06RY/9pt6sj1J+HJL2kxNMUh2j8hp1aT4BHaBoqNEtH1Xd+AqOx7KjKhY1tJmdskh7cz93LEec25K3tzDsdSzFlMva+nkc8DK13aMgk6gSipPex1+fEWPqk+o5sZRnlwF+A4kkchPnA4owxbUYDlDSDlIaQ5kj8LhZzevqAbKb8NyKbFem9zajwTLS1rgMxcWklwdd3AwLTwKm/FtBYZ3H2kgtgkFwJJtFo8SFH9SIzb2YvMknWODfAC3rxJXPE5mhpcAR2jR5uIaPi4JtNLArjOGRcglpBBBAifA30R2wzZbgnSQYMawdCqtUPLhLN0CSeZMgN+voub6m+wBhlpzTeGggibcTceqbNLzajTMHQ35g9RwSZVa4S1wcNJBBE+So9q7OS3MIADzckm+VsnSJJ8wufauNVzmOcDADzDS0wTDYjvXN+Eps00w8HQgxy5qJcFnPrHtGlpOfKc262OzJHeAAvIt4u6p1n7zHA5X5rHI3ekGWkADMIk9IngmzS/KReBqYVGu6S10ZHB4h4aASTaDa4M6JPDy13aHdvqGBobHEkeKbNLz6jWiXENHMmAmKioYQVG0xdwaBbPGYUxpmJE6XvfmpYSk4N3HOawuJAJPEzbiGnUDqmzS12oJIEkjhBmOYHEKLKoJI0IiQ7dInQ34WN+hUTQc54kk5ROa9ptA5/wDngpMw4LzyaIJ5uIBAHQA/Hoio4oghtwctRpgXNnDlKsMeDpJ8lNtFo4LoGoOQDjOgHmT9FKizK1rS4ugRmOp6ldIUoQKEQpIREUQpIQRhKFNRQRhClCEVfCalCIWkRSIU4UXIOTlxJXZ4K5NYZQZ2z6znYrFF7oZTp02tabBrd4ucOkgyenRSdiqeKcKbAKlEHM99nU3RowcDvQf9KyNq+zobVaaDHkVQ/OBHZsbZxImAXEgBrXSAeS3sJhqeGoMpsAa1jeE3cbuMm5kzqsq5sZToDIxoY3NmIHM6lZftDj6gFOnSeWl8l7hYhugE8Jv6KWOxQkxdx4cAOZKy31BOZ0uJ1I6cB6Lnll6jpjjrzUtnYt7HgF7iDwJJHWx6StLa+1KbacZg52YENad6W74PSC0H+6xHvDnABmUaSXd2PxEn81HFUHvDabe9Mt5HNfX4ysbyka1ja60/aepn3i1zCYgCAPPUeaD7VVKdYMqU25CY3ZBHKCTfgsZ+yK36zTp1BkDu86JGQa30PLxK09oez7qtNxY4F9Nm6ZkPYJlpjR4iJ4/Kfu1+jVw3tJTLyx9M0+IPek68hdaVPF0y3dgDU2i5uT6r5u/EZhTqTezXcw9uh8xf1Xq9mYsPAdwcMrhyPH81MerfZelPTcdiqbQ53mYFyYA87AKszaLS7MWRaAZkga6cOschyVNmKDX9mSMw4cS3mOY6qjXxbadUU3HKH9x57r/3Z/EOR8lcupl6ZmEXH+0uHFRoex7YkB5AgcCcsyPHX4q8dsYckNzh8wbAuFrgzpqAvG+0mDu2qDl0a6bDMTDb8JsPGOao4DHCkT2sjIDeCYHMgcLq452xOyPoFXbFNpaLum9hwnmYXLE7aYxmcNJdMBptfqViYbEMewOYRUabtcCC08wDoqWH2rRxDqmHa5zHiJY5rmuBGhAOoHGOBVuWXpZjj7bmG9oKgu9jXAnhLY87rLoe3FSniHU8RQa1hMksJLmiAJvZwgA8FS2fTxdTEvpNoZaLP/te4Nk/iESHA8GiY4lQ27sV1QtDvs6zBALu49nKRPHQ31KzMspy3243h9LpPa9rXtIc1wBBGhabgqcLwfsh7Q/qwGCxk0i37uo7uFp/ZLtImYdpwXvhe4Mg6HgQu0u3DLHtpQnCcJwtMlCIThEIhITQtBJKSSyIIU0INBEJhC0hJEJoKCJCWVSQg44ms2mwvcYAGqw61R9QuJsA2Q3kOvktDbeFdUYIIhkuIM3MW+qzcE7OymT+3TLT4tlv0WLy1OHR+GY5xzCZbH9fH1WbiaRbmadbHNEA9fgLDiAtUEww8XNv4jX6qnUbUe3K7IRB1kEazBiyl8emo8vtTEZAbRl7ODaWtdmGYHgNOo81qezxfUa6pUu2Ya4i53bu9beq5YvY7KneFssHK8iW21txgXWxs9wdRsIDKYYB1Aj4KS+lsdXmdbiSL3tl4Lka2RwcHSS02Juco5njI6C67tZIHmfVZ+0MM4FjpiAAPHMZPxGqttk8Qxkt8szauwxUmthwG1DOekbMfzjk74HoqRwdbCMZWIPZuAztPeYToHiLDhPAr0DLPtE6WudQDfQRb/aUq21A1+RzbwNY7pEmRx1hcssZrddMcrxGY6tSqsBqAENuH6OYTbMHC7fHTmqeN7ak0h9L9cwrmw4gB1Zo456cQ9vVt+is4zZFRju1wm+0mXYYkBzP3qLjaObSY5EaG7hNnvYzMwhlQwexJ+zHQEA5D4S3pxWccb9ayynxm7PNCtSPY1BWoOBaabznABF2Eu3gP3XSsXaOya2Hl1Fpr4cCTRJJr0x/lPPfbrukzyWxjdhHE1DUpA4HEts7Ed3M+2VjmDdqg5hvX4CeC9DsDC1mUj+slj6jrbgIYWgnegk6/SbaLc6d3tzuUfLG1WMjEYSt2bnP3qIEsPv0yd10DUeXNZG3do1aldtYt7NzQA1zCcsibtOo10X032q9kqdQPxVABlRozPaAN9rZkyLkweNzHkfm72OpnI8WI8Wub05ha3q+V7e7Hw3tje22Sm7tZFZjSWkDdqGLAx3XTrw+S0tg/pCp1B2W0qbcp0rMaYB/eYLt95voNV4Sts9r57Pdd+Amx908PA/BUJIOVwuCRyIIW5jjeHPLunL6fUq08U91PIHUd51KXZnOaYGo0PGx+UqWzsZi8D9w/taQ1wzzdvPI78o8CvJ+wrM2Lgk9mKbi6NJloEnhcgz0XuNoYZ9J5AO4QHAkbmQyJiw5jyTtkuovddbr1Gw/aWji2F2V1JzXZXMfwfAOo4X1MLcC+a4erUZLpG9GYC4IFhI/Ir12x9oGKbSczCIniD/XyWu1it1CaSiEhNJaAhCFkJCEINEIQmtISEIQJJSKEHGuJY4dF5vZR+z/AIdZw/0mCf5l6eqN0+C87sQbtW1jWP8AK0f+LN5anDsRF+DHmfdcNfiVzqU5BbMa3Vhgh5adHNt4D+65uGWx1bb/AE8Py8kGLiwKbHAcY9VqU6WTDsbxMepWdVZ2ldjOAOY+A/oLZxWtNvK/p/dT3tpFjfyUNqD7tvAuFuB1JtxNo813w4m4uQ6Y5xaFXxxmq0fhaXHh015xmstRlm4ohrgXRAJJzWENY4mAONgfNcsVhBiW0hnLH06bWuAymYiD4TPqu9VhL2CLHPoN07jrSfA+oV3AN3nMJnIeQgSAY8Vm4y+K1LrzFXDMyNILr02He00kj4R6LtjiGUu3cIHZ5nAfiyzC41X/AHrRq+o1n+6x+q2sdgW16T6LtHAeREFp9QExkk1DLLfmvPbTrT2eEa/JVqOY9rosKbXh7rm07vxC0sHhXU6TgXuqZG2c7vHKIkkcfyVhjR2r2ngxojoZ/wDFLEkMw9Q8Ax3rcfOVrUZ3UsOA57mnSB0nMJ+q+QYnCtzVKDhenUexpNoewuAvzOVfX9nt3yedNnyP5BfMvainkx9YAa4gO6b7M0/FcutPEr0fj3zY8ZTqfbtHQu+ED5pbdwkOZUA13XHn+E/CPRDacYt7fwj4E2+i1a9MPljhuvb/AMuBHVTu7cpVuPdLKwvZ7FMp4hrqgmnmLT0Dhlny1X0d9ZwyjO4tAyCxIyzoBo2dLdF8rNF1N72O1a4+Y4H0XtvZ7FirQcx4zVGZGDiSwvGS824jyC9E8vLfD0FEEFrXSC2LiLtJ1HM3Hx0K1vZ/El4l3KmQeBDu0NvRY2LqEAZSHFsiCL6Wu0WNvgtP2fEYYPH7Ipyeoc5p84d8VR7tCjQdLGnoprmEkU0itBITSQEIQhZGiEIQtISaEIBCEIOOKMU3HoVi7BaOxqHi55PlMA/Bam13xSdGrrAcSTYBUMIw02MaONEeoJJ/mWfa+jrgmCNWmf66FRxJBAfpwPgfysVae2WAjWPpx6KriGEsdFrXbqNFasUNjUiX1Hu1ktHgDHzBVuod5zjygeWqsMG4xwMS0TA45QSVxx1KA1o0eY8/6hTWovt22cLNcdHSq2JZFR77wWiNIiTxOn/qt4B002D8PzFlwxTZZTMTIjSTpPyzeqThPbJcG9qwWJ65nG9jIGvD0V/DOPbVM2oAuYmLxpaP6KqBx/WPCCcxAhogEiON5Xc7r6jhH7Ondg5wbc5AnxSLWax+bEta2815jwvK9cx28ei8XsGpOMbPAv8AWF7PLBefD5JiZPPYelUp4jGZT2r3va5rXuytDXHQHkBddtuvGSnSbY1qrR5F0uMeq6tdONqcnUGOHgHPBhVnzUx7KZsKJztMWLXsiJ6Gb9VpG9TZDz7jfhK+Z+3VKNonm7sncTILHsFuN2lfUo3/APSPmV80/SICMbm4dhSPSW1Xjz1XPrfxdvxr+/8AjwdamBi3me8xpn1H/VXXtsDyNhx8Qq2K/wDlVBya1vxcY/5KntTaRbNOn3ou78PRvVctXLWnbLKY73/bjt6vTe9gbeoLPf04N8fkpez73txdNrXHI8gPbwyghw06tCyaTIph54uJJ8yP68V7HYmzhSdh8/3lWoHOAuWsDHlrbW4Any5L04ztmnjzvddvT1zcxYFrnAGSDukWI8fitH2Zfnwr2/5WbrIDfqs7GH7RwED7N8kgETlFrcTdbnswMs0XABzWHQWI3Z8NVpl6PZVTNTCurI9nzuOaf2THpZa6zeVJIpoQRQmhAkIQsjRQhSWkRQpIQCEIQZW1Hb7RwbTe7zsPz9U6rIFPo2Ph/wCJbUE1GDmxw9XMH1XfEiw6KRf6V2uOUBV8Y4dm/lH0Xendvr81Vxxhjj0KXhZyt4MA0RN7WVXG1Jp0/eF+KtYFsUWe4PkqWOMU2+IUvBOVjA/dk+Km9k0gP3QfQCfhKjhB9l4tP1Vin3Ge6PkkK805sGs7/LAtujznUWA813qjO8mZcWsbm4Z3BzhI4ch0cjaIb/iCALkNiCeItyvf1CjTJO6Ae0ZWEl1yabHyDA0sQJU4aZuwGBmKLnzla5wJE2cRaY4L27Htd3SCOhBXk9lya1WNTVeOkhshbtHK4teODZBGpIEGelxZXHwmXlTrV2jGsptEZKLp95zmnKOm7Pmtei2SCQJXlXYlv/8AVFMje7HOD4nKVv4t1QGk6mM0VmZx/lmWu8YkFaRpNM1D0aF8+/SXhz2tN/B2He0eLXB31XvsG/MC/m4+gsPkvJfpLEU6L4nKKn8rT9Fjq/xrr0LrqR8lxb8uKqGJzPY2I4ZQT8CSsjabYxL+uU/8QtzGU3frFm96ox3AbmQAkedlk7bb/iT7jSsdLmfG+vOfqsyL0zxcHt6kGXN+Er3Gy8QKjsETdrabs0n8DQwnXmf7rxFZmYcuIPEHmvV+wdR1Ss1rhPZ06nhvuYeRgkh3DivQ8z09XLnGha6nUgxmBMDXjOvzW17LvlzTnzE0hz0sQBKxXv8At2AnJ9lUPMDTQH0j5wtn2VB3DIM0xMROgifT5INrYpiriG8n/MArYWPgLYusPxMY75j6LZKzlyRFCaSBJJpLIEIQitFCFJaQIQhAIQhBlbR+/pdQW+ctd/1KsYkbp8FXxwnE0egcf+JVnEdw+Czj7W+lPDdz1+apbUMU3K5hPuwqW1+4fFLws5aWGH2bfdHyWbtE2aOq1qQ3AOiyNp8PFMuEnK/QEUx7qk+pkoh/4Wz5xYeqVP7pvgFw2iP8IeQLZ8A4fWFYKGLB7J+t3N1cALls6cr+itOw7Q8aQ85m3MTDQRzm1lwxdP7ERxe3RsG7tb8r+q1MSzuHi3jYESDqeRsmhi4D7M4moWl2Ss85QBmJ3YgK9gMQx1Jr2PDqbpc12mVriTlPUTHkp4Kjkr1BwfvRz5rCwGzMza9HWmKtRjmzBbUD3OYR4te30Tgvlz28xzMU2vTaHVhRc1s8b6ar1GCeX02v0zMDugJAKzy6nUxLaFSBUbQD2OFnkZnsfrb9kGOvRc8eOzxlM6NdQqNAHdByE6eSo3tn/dsnUjykrzX6SKc4WmeAqEf7mO/JeowginTHJo+SyPbWjnwNT91zDPLfDSfRxWc5vGt9G6zn18k21Q7Sjhzo4AFp4h27p46LyO0KmfEOI0aA3pugT8ZXr6lT/DUHGDDJIPMMHHyXhWd8rn0J4dvyr+y68bvkvVfo7bFSo8fssE9JJv8ABeYyyF7D9HtMA4hxE5cgu4tA7x4a+C9Dy1uNM1pN5w1QxGUag6kXEnktf2WfDaUAZXMaNbNGWzeRPTossFvbWJcG4OpoSQ2XWBHLhF4laWxSBh6BLjuOYcoAuYi8a26INpm7jm/v0f5XD81uQsLFWxdA8crh5S1bxWciIoQUisqSEITYSE0KDQUkIVQIQhAIQhaGVib4pnRhVnF/du90oQs4+1vpSwP3bfBUdsnc80kJeFnLbaN0eCxdqahCEvBjy0WD7Ie6oYkThKn8Nx9L/RCERTx7AKTZiQWG8m/9gVpMu1vAaCbngY8IEIQrC8B7IqMd+IR8FgbMcW4zFU3SBVc5wv8AhcWzbmCPRCFUixhcIzE1m1iwsfhn5RVDyHvcBvtLQINOSRcyeWiftPZ9Jw1u3ycCPqhCXgnL0VMQxvh9FS9oKWbB4hv+W4/7RmHyQhMuKuPM+vieKJ/UZ4NNRojpnC8WzvlCFx6PF+vT+TzPkX2he2/R+3NTrtJgVHAaTdoPpz8vBCF6XlrWw5zVq+UExgnWJAgSep1tYLUwjCaLA1wa1hEg5tQ0RobRe90IUVsY0/4nCn8TXj4NK3yhCxkkRSKELKkhCFAIQhFf/9k="
-          />
+          {_ProductList
+            .filter((product) =>
+              _SearchQuote.toLocaleLowerCase() == ""
+                ? product
+                : product.name
+                    .toLocaleLowerCase()
+                    .includes(_SearchQuote.toLocaleLowerCase())
+            )
+            .map((product, index) => (
+              <ProductCard
+                key={index}
+                Price={product.price}
+                Discription={product.description}
+                Catagory={product.category}
+                Name={product.name}
+                ImgUrl={product.ImageUrl}
+              />
+            ))}
         </Grid>
       </Flex>
     </>
