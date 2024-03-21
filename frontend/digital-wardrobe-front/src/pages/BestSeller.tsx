@@ -19,7 +19,11 @@ const BestSeller = () => {
           </Text>
           <br />
           <br />
-          <Button size={"4"} className=" border-white border-2  text-white  ">
+          <Button
+            variant="outline"
+            size={"4"}
+            className=" border-white border-2  text-white  "
+          >
             See More
           </Button>
         </Container>
