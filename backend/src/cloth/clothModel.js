@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var ClothSchema = new Schema(
   {
-    type: {
+    name: {
       type: String,
       required: true,
     },
@@ -15,17 +15,14 @@ var ClothSchema = new Schema(
       type: String,
       required: true,
     },
-    stock: {
-        type: String,
-        required: true
+    ImageUrl: {
+      type: String,
+      required: true,
     },
     description: {
       type: String,
       required: true,
-    },
-    rating: {
-      type: String,
-    },
+    }
   },
   {
     timestamps: true,

@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 const PORT = 8000;
 
 
-mongoose.connect(process.env.MongoDbUrl,{
+mongoose.connect('',{
     useNewUrlParser: true,
     useUnifiedTopology:true
 }

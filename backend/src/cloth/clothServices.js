@@ -24,12 +24,11 @@ module.exports.getClothDBService = (id) => {
 module.exports.createClothDBService = (clothDetails) => {
   return new Promise((resolve, reject) => {
     var clothModelData = new clothModel();
-    clothModelData.type = clothDetails.type;
+    clothModelData.name = clothDetails.name;
     clothModelData.category = clothDetails.category;
     clothModelData.price = clothDetails.price;
-    clothModelData.stock = clothDetails.stock;
     clothModelData.description = clothDetails.description;
-    clothModelData.rating = clothDetails.rating;
+    clothModelData.ImageUrl = clothDetails.ImageUrl;
 
     clothModelData
       .save()
