@@ -16,7 +16,7 @@ const navbar = () => {
   ];
 
   return (
-    <nav className=" flex items-center justify-between h-16 border-red-500 border-2 p-6 mb-5 mt-1">
+    <nav className=" flex items-center justify-between h-16   p-6 mb-5 mt-1 border-b-2 border-[#F8D3B8]">
       <div className=" flex flex-col items-center ">
         <FaShirt
           color="#436D83"

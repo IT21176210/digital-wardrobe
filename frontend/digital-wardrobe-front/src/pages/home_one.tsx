@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const home_one = () => {
   const to = useNavigate();
   return (
-    <div>
+    <div className=" pl-8 pr-8">
       <Grid columns={{ initial: "1", md: "2" }} align={"start"}>
         <Box className=" pt-10">
           <Text

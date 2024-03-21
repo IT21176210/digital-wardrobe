@@ -16,6 +16,10 @@ const NewCollections = () => {
       ProductName: "Fan Jersey -Dhoni",
       Url: "https://thunimany.in/wp-content/uploads/2022/04/yellove.jpg",
     },
+    {
+      ProductName: "Fan Jersey -Dhoni",
+      Url: "https://thunimany.in/wp-content/uploads/2022/04/yellove.jpg",
+    },
   ];
   return (
     <div>
