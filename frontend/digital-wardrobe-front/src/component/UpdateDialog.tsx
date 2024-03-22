@@ -86,7 +86,7 @@ const UploadDialog = ({
           </Flex>
         </Dialog.Close>
         <br />
-        <Dialog.Title>Add New Product</Dialog.Title>
+        <Dialog.Title>Update</Dialog.Title>
         <Dialog.Description>
           enter the details of the product that you like to add
         </Dialog.Description>
@@ -252,7 +252,7 @@ const UploadDialog = ({
               disabled={isSubmitting}
               className=" bg-red-400 pt-1 bt-b-1 pl-2 pr-2 rounded-md font-medium text-lg"
             >
-              Save
+              Update
             </button>
           </Flex>
         </form>
