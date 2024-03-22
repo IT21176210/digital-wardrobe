@@ -53,11 +53,12 @@ const ProductCard = ({
               <Text weight={"medium"}>
                 <Link className=" text-black">{Name}</Link>
               </Text>
-              <Flex align={"center"} gap={"2"}>
+
+              <Flex align={"center"}>
                 <UpdateDialog
                   name={Name.toString()}
                   price={Price.toString()}
-                  imageurl={ImgUrl}
+                  imageurl={""}
                   cato={"Male"}
                   desc={Discription.toString()}
                   _id={_id.toString()}

@@ -1,4 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { ImageDb, Fireapp } from "./FirebaseConfig";
 import {
   DropdownMenuIcon,
   InfoCircledIcon,
@@ -21,25 +22,24 @@ import { useForm } from "react-hook-form";
 import { TfiClose } from "react-icons/tfi";
 import { z } from "zod";
 import { ErrorsC } from ".";
+import firebase from "firebase/compat/app";
+import "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import imageCard from "./imageCard";
 
 const FormValidationSchema = z.object({
   NewProductName: z.string().min(1, "Product Name is required"),
   NewProductDescription: z.string(),
   NewProductPrice: z.string().min(1, "Value must be greater than Zero"),
-  NewProductUrl: z.string().min(1, "Needed image "),
+  NewProductUrl: z.object({}).required(),
 });
 
 type FormSchma = z.infer<typeof FormValidationSchema>;
 
-// interface FromValidation {
-//   NewProductName: String;
-//   NewProductDescription: String;
-//   NewProductPrice: String;
-//   NewProductUrl: String;
-// }
-
 const AddProductDialog = () => {
   const [isSubmitting, setSubmit] = useState<boolean>(false);
+  const [_imgurl, setImgUrl] = useState<String>();
+  const [isImg, setImg] = useState<File | null>(null);
   const [Catog, setCatog] = useState<"Male" | "Female" | "Uni-SEX">("Male");
   const [CausedError, SetCause] = useState<boolean>(false);
   const {
@@ -63,7 +63,11 @@ const AddProductDialog = () => {
       <Dialog.Content>
         <Dialog.Close>
           <Flex justify={"end"}>
-            <TfiClose />
+            <TfiClose
+              onClick={() => {
+                reset();
+              }}
+            />
           </Flex>
         </Dialog.Close>
         <br />
@@ -81,23 +85,44 @@ const AddProductDialog = () => {
           </Callout.Root>
         )}
         <form
-          onSubmit={handleSubmit((e) => {
+          onSubmit={handleSubmit(async (e) => {
             setSubmit(true);
-            axios
-              .post("http://localhost:8000/cloth/create", {
-                name: e.NewProductName,
-                category: Catog,
-                price: e.NewProductPrice,
-                ImageUrl: e.NewProductUrl,
-                description: e.NewProductDescription,
-              })
-              .then(() => {
-                setSubmit(false);
-                reset();
+
+            const ImgRef = ref(ImageDb, "images/" + isImg?.name);
+            await uploadBytes(ImgRef, isImg!).then((snapshot) => {
+              console.log("uploaded" + snapshot.metadata);
+            });
+
+            await getDownloadURL(ImgRef)
+              .then((url) => {
+                axios
+                  .post("http://localhost:8000/cloth/create", {
+                    name: e.NewProductName,
+                    category: Catog,
+                    price: e.NewProductPrice,
+                    ImageUrl: url,
+                    description: e.NewProductDescription,
+                  })
+                  .then(() => {
+                    setSubmit(false);
+                    reset();
+                  })
+                  .catch((e) => {
+                    SetCause(true);
+                    console.log("Submition error" + e);
+                  });
               })
               .catch((e) => {
-                SetCause(false);
+                console.log("errpr" + e);
               });
+
+            console.log(
+              e.NewProductName +
+                Catog +
+                e.NewProductPrice +
+                _imgurl +
+                e.NewProductDescription
+            );
           })}
         >
           <Flex direction={"column"} gap={"1"}>
@@ -137,14 +162,18 @@ const AddProductDialog = () => {
               <ErrorsC Msg={errors.NewProductPrice.message!} />
             )}
             <br />
-            <Text>3. Price Catogory</Text>
+            <Text>3. Product Catogory</Text>
             <DropdownMenu.Root>
               <DropdownMenu.Trigger>
                 <TextField.Root>
                   <TextField.Slot>
                     <DropdownMenuIcon />
                   </TextField.Slot>
-                  <TextField.Input placeholder="Product Catogory" />
+                  <TextField.Input
+                    placeholder="Product Catogory"
+                    onChange={() => {}}
+                    value={Catog}
+                  />
                 </TextField.Root>
               </DropdownMenu.Trigger>
               <DropdownMenu.Content>
@@ -176,15 +205,21 @@ const AddProductDialog = () => {
             <Grid columns={"2"}>
               <Box>
                 <Flex justify={"center"} align={"center"} direction={"column"}>
-                  <Button mt={"4"}>Upload Image</Button>
-                  <TextField.Root>
-                    <TextField.Input {...register("NewProductUrl")} />
+                  <TextField.Root m={"4"}>
+                    <TextField.Input
+                      type="file"
+                      accept="image/*"
+                      {...register("NewProductUrl")}
+                      onChange={(e) => {
+                        setImg(e.target.files![0]);
+                      }}
+                    />
                   </TextField.Root>
                 </Flex>
               </Box>
               <Box>
                 <img
-                  src=""
+                  src={isImg ? URL.createObjectURL(isImg) : ""}
                   style={{
                     display: "block",
                     objectFit: "cover",
@@ -195,6 +230,9 @@ const AddProductDialog = () => {
                 />
               </Box>
             </Grid>
+            {errors.NewProductUrl && (
+              <ErrorsC Msg={errors.NewProductUrl.message!} />
+            )}
           </Flex>
           <br />
 

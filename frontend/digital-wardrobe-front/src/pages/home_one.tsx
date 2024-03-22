@@ -28,7 +28,7 @@ const home_one = () => {
           <Button
             size={"4"}
             onClick={() => {
-              to("/Shop");
+              to("/Cloths");
             }}
           >
             Shop Now
