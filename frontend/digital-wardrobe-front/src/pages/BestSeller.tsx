@@ -1,8 +1,8 @@
 import { Button, Container, Flex, Grid, Text } from "@radix-ui/themes";
-import { CardCustom } from "../component";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { CardCustom } from "../component";
 
 interface Productx {
   name: String;

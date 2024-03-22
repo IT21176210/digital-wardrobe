@@ -1,4 +1,4 @@
-import { Pencil2Icon, TrashIcon } from "@radix-ui/react-icons";
+import { TrashIcon } from "@radix-ui/react-icons";
 import {
   AlertDialog,
   Box,

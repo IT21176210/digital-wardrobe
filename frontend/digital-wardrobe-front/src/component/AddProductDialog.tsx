@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ImageDb, Fireapp } from "./FirebaseConfig";
 import {
   DropdownMenuIcon,
   InfoCircledIcon,
@@ -17,15 +16,14 @@ import {
   TextField,
 } from "@radix-ui/themes";
 import axios from "axios";
+import "firebase/storage";
+import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { TfiClose } from "react-icons/tfi";
 import { z } from "zod";
 import { ErrorsC } from ".";
-import firebase from "firebase/compat/app";
-import "firebase/storage";
-import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import imageCard from "./imageCard";
+import { ImageDb } from "./FirebaseConfig";
 
 const FormValidationSchema = z.object({
   NewProductName: z.string().min(1, "Product Name is required"),
