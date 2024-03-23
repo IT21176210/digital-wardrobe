@@ -58,7 +58,7 @@ const ProductCard = ({
                 <UpdateDialog
                   name={Name.toString()}
                   price={Price.toString()}
-                  imageurl={""}
+                  imageurl={ImgUrl}
                   cato={"Male"}
                   desc={Discription.toString()}
                   _id={_id.toString()}

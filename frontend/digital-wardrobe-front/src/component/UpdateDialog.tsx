@@ -105,36 +105,64 @@ const UploadDialog = ({
               console.log("uploaded" + snapshot.metadata);
             });
 
-            await getDownloadURL(ImgRef)
-              .then((url) => {
-                console.log(
+            if (isImg == null) {
+              console.log(
+                "not change image" +
                   e.NewProductName +
-                    Catog +
-                    e.NewProductPrice +
-                    url +
-                    e.NewProductDescription +
-                    _id
-                );
-                axios
-                  .patch("http://localhost:8000/cloth/update/" + _id, {
-                    name: e.NewProductName,
-                    category: Catog,
-                    price: e.NewProductPrice,
-                    ImageUrl: url,
-                    description: e.NewProductDescription,
-                  })
-                  .then(() => {
-                    setSubmit(false);
-                    reset();
-                  })
-                  .catch((e) => {
-                    SetCause(true);
-                    console.log("Submition error" + e);
-                  });
-              })
-              .catch((e) => {
-                console.log("errpr" + e);
-              });
+                  Catog +
+                  e.NewProductPrice +
+                  imageurl +
+                  e.NewProductDescription +
+                  _id
+              );
+              axios
+                .patch("http://localhost:8000/cloth/update/" + _id, {
+                  name: e.NewProductName,
+                  category: Catog,
+                  price: e.NewProductPrice,
+                  ImageUrl: imageurl,
+                  description: e.NewProductDescription,
+                })
+                .then(() => {
+                  setSubmit(false);
+                  reset();
+                })
+                .catch((e) => {
+                  SetCause(true);
+                  console.log("Submition error" + e);
+                });
+            } else {
+              await getDownloadURL(ImgRef)
+                .then((url) => {
+                  console.log(
+                    e.NewProductName +
+                      Catog +
+                      e.NewProductPrice +
+                      url +
+                      e.NewProductDescription +
+                      _id
+                  );
+                  axios
+                    .patch("http://localhost:8000/cloth/update/" + _id, {
+                      name: e.NewProductName,
+                      category: Catog,
+                      price: e.NewProductPrice,
+                      ImageUrl: url,
+                      description: e.NewProductDescription,
+                    })
+                    .then(() => {
+                      setSubmit(false);
+                      reset();
+                    })
+                    .catch((e) => {
+                      SetCause(true);
+                      console.log("Submition error" + e);
+                    });
+                })
+                .catch((e) => {
+                  console.log("errpr" + e);
+                });
+            }
           })}
         >
           <Flex direction={"column"} gap={"1"}>
@@ -234,7 +262,7 @@ const UploadDialog = ({
               </Box>
               <Box>
                 <img
-                  src={imageurl ? URL.createObjectURL(isImg!) : ""}
+                  src={imageurl}
                   style={{
                     display: "block",
                     objectFit: "cover",
