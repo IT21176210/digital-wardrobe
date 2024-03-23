@@ -1,5 +1,4 @@
 import { Callout } from "@radix-ui/themes";
-import React from "react";
 import { BsInfoCircle } from "react-icons/bs";
 
 const Errors = ({ Msg }: { Msg: String }) => {

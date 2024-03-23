@@ -1,10 +1,10 @@
 "use client";
 import { Flex, Grid, TextField } from "@radix-ui/themes";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import { NavBar, NewProductCard, ProductCard } from "../component";
-import { useEffect, useState } from "react";
-import axios from "axios";
 
 interface Productx {
   name: String;

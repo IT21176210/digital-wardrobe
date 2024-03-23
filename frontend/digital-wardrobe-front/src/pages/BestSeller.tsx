@@ -1,7 +1,43 @@
 import { Button, Container, Flex, Grid, Text } from "@radix-ui/themes";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { CardCustom } from "../component";
 
+interface Productx {
+  name: String;
+  description: String;
+  price: String;
+  ImageUrl: string;
+  category: String;
+  _id: String;
+}
+
 const BestSeller = () => {
+  const to = useNavigate();
+
+  const [_ProductList, _setProductList] = useState<[Productx]>([
+    {
+      name: "",
+      description: "",
+      price: "",
+      ImageUrl: "",
+      category: "",
+      _id: "",
+    },
+  ]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/cloth/getAll")
+      .then((data) => {
+        const productlist = data.data.data;
+        _setProductList(productlist);
+      })
+      .catch((error) => {
+        console.log("Error" + error);
+      });
+  }, [_ProductList]);
   return (
     <>
       <Grid
@@ -20,6 +56,9 @@ const BestSeller = () => {
           <br />
           <br />
           <Button
+            onClick={() => {
+              to("/Cloths");
+            }}
             variant="outline"
             size={"4"}
             className=" border-white border-2  text-white  "
@@ -30,9 +69,14 @@ const BestSeller = () => {
 
         <Container className=" flex justify-center">
           <Flex gap={"4"} className=" pr-5">
-            <CardCustom />
-            <CardCustom />
-            <CardCustom />
+            {_ProductList.slice(0, 3).map((product, index) => (
+              <CardCustom
+                key={index}
+                name={product.name}
+                price={product.price}
+                imgurl={product.ImageUrl}
+              />
+            ))}
           </Flex>
         </Container>
       </Grid>

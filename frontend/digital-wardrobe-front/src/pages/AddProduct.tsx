@@ -1,5 +1,4 @@
-import { Dialog, Flex, Heading } from "@radix-ui/themes";
-import React from "react";
+import { Dialog } from "@radix-ui/themes";
 
 const AddProduct = () => {
   return <Dialog.Root></Dialog.Root>;
