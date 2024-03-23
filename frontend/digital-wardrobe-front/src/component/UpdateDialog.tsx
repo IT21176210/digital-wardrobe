@@ -50,7 +50,7 @@ const UploadDialog = ({
   imageurl: string;
 }) => {
   const [isSubmitting, setSubmit] = useState<boolean>(false);
-  const [_imgurl, setImgUrl] = useState<String>();
+  const [_imgurl, setImgUrl] = useState<String>(imageurl);
   const [isImg, setImg] = useState<File | null>(null);
   const [Catog, setCatog] = useState<"Male" | "Female" | "Uni-SEX">("Male");
   const [CausedError, SetCause] = useState<boolean>(false);
@@ -107,8 +107,16 @@ const UploadDialog = ({
 
             await getDownloadURL(ImgRef)
               .then((url) => {
+                console.log(
+                  e.NewProductName +
+                    Catog +
+                    e.NewProductPrice +
+                    url +
+                    e.NewProductDescription +
+                    _id
+                );
                 axios
-                  .post("http://localhost:8000/cloth/update" + _id, {
+                  .patch("http://localhost:8000/cloth/update/" + _id, {
                     name: e.NewProductName,
                     category: Catog,
                     price: e.NewProductPrice,
@@ -243,15 +251,17 @@ const UploadDialog = ({
           </Flex>
           <br />
 
-          <Flex justify={"end"}>
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className=" bg-red-400 pt-1 bt-b-1 pl-2 pr-2 rounded-md font-medium text-lg"
-            >
-              Update
-            </button>
-          </Flex>
+          <Dialog.Close>
+            <Flex justify={"end"}>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className=" bg-red-400 pt-1 bt-b-1 pl-2 pr-2 rounded-md font-medium text-lg"
+              >
+                Update
+              </button>
+            </Flex>
+          </Dialog.Close>
         </form>
       </Dialog.Content>
     </Dialog.Root>
